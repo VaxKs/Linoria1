@@ -2781,7 +2781,7 @@ function Library:SetWatermark(Text)
     Library.WatermarkText.Text = Text;
 end;
 
-function Library:Notify(Text, Time)
+function Library:Notify(Text, Time, inf)
     local XSize, YSize = Library:GetTextBounds(Text, Library.Font, 14);
     local NotifyAddons = {}
 
@@ -2871,16 +2871,19 @@ function Library:Notify(Text, Time)
 			NotifyOuter:Destroy()
 		end
 	end
+    
+    if not inf then 
+        task.spawn(function()
+            wait(Time or 5);
 
-    task.spawn(function()
-        wait(Time or 5);
+            pcall(NotifyOuter.TweenSize, NotifyOuter, UDim2.new(0, 0, 0, YSize), 'Out', 'Quad', 0.4, true);
 
-        pcall(NotifyOuter.TweenSize, NotifyOuter, UDim2.new(0, 0, 0, YSize), 'Out', 'Quad', 0.4, true);
+            wait(0.4);
 
-        wait(0.4);
-
-        NotifyOuter:Destroy();
-    end);
+            NotifyOuter:Destroy();
+        end);
+    end
+    
     return NotifyAddons
 end;
 
