@@ -2783,6 +2783,7 @@ end;
 
 function Library:Notify(Text, Time)
     local XSize, YSize = Library:GetTextBounds(Text, Library.Font, 14);
+    local NotifyAddons = {}
 
     YSize = YSize + 7
 
@@ -2861,6 +2862,16 @@ function Library:Notify(Text, Time)
 
     pcall(NotifyOuter.TweenSize, NotifyOuter, UDim2.new(0, XSize + 8 + 4, 0, YSize), 'Out', 'Quad', 0.4, true);
 
+    function NotifyAddons:DestroyNotify()
+		if NotifyOuter and NotifyOuter.Parent then
+			pcall(NotifyOuter.TweenSize, NotifyOuter, UDim2.new(0, 0, 0, YSize), 'Out', 'Quad', 0.4, true)
+
+			wait(0.4)
+
+			NotifyOuter:Destroy()
+		end
+	end
+
     task.spawn(function()
         wait(Time or 5);
 
@@ -2870,6 +2881,7 @@ function Library:Notify(Text, Time)
 
         NotifyOuter:Destroy();
     end);
+    return NotifyAddons
 end;
 
 function Library:CreateWindow(...)
