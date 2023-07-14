@@ -2194,6 +2194,31 @@ do
             Parent = DropdownInner;
         });
 
+        local ContainerText = Library:Create('Frame', {
+			BackgroundTransparency = 1,
+			ClipsDescendants = true,
+			Size = UDim2.new(1, 0, 1, 0),
+			ZIndex = 6,
+			Parent = DropdownInner,
+			Visible = false,
+		})
+
+		local Searchtextbox = Library:Create('TextBox', {
+			BackgroundTransparency = 1,
+			Position = UDim2.new(0, 5, 0, 0),
+			Size = UDim2.new(1, -42, 1, 0),
+			Parent = ContainerText,
+			Font = Enum.Font.Code,
+			PlaceholderColor3 = Color3.fromRGB(190, 190, 190),
+			PlaceholderText = 'Search Here...',
+			Text = '',
+			TextColor3 = Library.FontColor,
+			TextSize = 14,
+			TextStrokeTransparency = 0,
+			TextXAlignment = Enum.TextXAlignment.Left,
+			ZIndex = 7,
+		})
+
         Library:OnHighlight(DropdownOuter, DropdownOuter,
             { BorderColor3 = 'AccentColor' },
             { BorderColor3 = 'Black' }
@@ -2427,21 +2452,31 @@ do
         end;
 
         function Dropdown:OpenDropdown()
-            ListOuter.Visible = true;
-            Library.OpenedFrames[ListOuter] = true;
-            DropdownArrow.Rotation = 180;
-        end;
+			local T = true
+			ItemList.Visible = not T
+			ContainerText.Visible = T
+			ListOuter.Visible = T
+			Library.OpenedFrames[ListOuter] = true
+			DropdownArrow.Rotation = 180
+		end
 
-        function Dropdown:CloseDropdown()
-            ListOuter.Visible = false;
-            Library.OpenedFrames[ListOuter] = nil;
-            DropdownArrow.Rotation = 0;
-        end;
+		function Dropdown:CloseDropdown()
+			local T = false
+			ItemList.Visible = not T
+			ContainerText.Visible = T
+			ListOuter.Visible = T
+			Library.OpenedFrames[ListOuter] = nil
+			DropdownArrow.Rotation = 0
+		end
 
         function Dropdown:OnChanged(Func)
             Dropdown.Changed = Func;
             Func(Dropdown.Value);
         end;
+        
+        function Dropdown:Refresh(tab)
+			Dropdown:SetValues(tab or {})
+		end
 
         function Dropdown:SetValue(Val)
             if Dropdown.Multi then
