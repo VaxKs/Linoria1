@@ -2618,7 +2618,14 @@ do
 				end
 			end
 		elseif type(Info.Default) == 'number' and Dropdown.Values[Info.Default] ~= nil then
-			table.insert(Defaults, Info.Default)
+			local c = 0
+			for i,v in pairs(Dropdown.Values) do
+				c += 1 
+				if c == Info.Default then
+					table.insert(Defaults, v)
+					break;
+				end
+			end
 		end
 
 		if next(Defaults) then
