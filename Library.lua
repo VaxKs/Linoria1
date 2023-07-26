@@ -1396,7 +1396,7 @@ do
 		local Groupbox = self
 		local Container = Groupbox.Container
 
-		--[[
+		
 		local TextLabel = Instance.new('TextLabel')
 		TextLabel.Size = UDim2.new(1, -4, 0, 15)
 		TextLabel.TextSize = 14
@@ -1405,7 +1405,7 @@ do
 		TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 		TextLabel.ZIndex = 5
 		TextLabel.Parent = Container
-		]]
+	
 		--[[
 		local TextLabel = Library:Create('TextLabel', {
 			Size = UDim2.new(1, -4, 0, 15),
@@ -1432,16 +1432,16 @@ do
 		function Paragrafh:SetText(Text)
 			TextLabel.Text = Text
 
-			--local Y = select(2, Library:GetTextBounds(Text, Library.Font, 14, Vector2.new(TextLabel.AbsoluteSize.X, math.huge)))
-			--TextLabel.Size = UDim2.new(1, -4, 0, Y)
-			-- TextLabel.Size = UDim2.new(1, -4, 0, TextLabel.TextBounds.Y)
+			local Y = select(2, Library:GetTextBounds(Text, Library.Font, 14, Vector2.new(TextLabel.AbsoluteSize.X, math.huge)))
+			TextLabel.Size = UDim2.new(1, -4, 0, Y)
+			TextLabel.Size = UDim2.new(1, -4, 0, TextLabel.TextBounds.Y)
 
-			-- Groupbox:Resize()
+			Groupbox:Resize()
 		end
 
 		Groupbox:AddBlank(5)
 		Paragrafh:SetText(Text)
-		-- Groupbox:Resize()
+		Groupbox:Resize()
 
 		return Paragrafh
 	end
