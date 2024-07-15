@@ -78,6 +78,10 @@ local function GetPlayersString()
     return PlayerList;
 end;
 
+local function ClickTouch(Input)
+    return Input.UserInputType == Enum.UserInputType.Touch
+end
+
 local function GetTeamsString()
     local TeamList = Teams:GetTeams();
 
@@ -2511,15 +2515,15 @@ do
 			Library:SafeCallback(Dropdown.Changed, Dropdown.Value)
 		end
 
-		DropdownOuter.InputBegan:Connect(function(Input)
-			if (Input.UserInputType == Enum.UserInputType.MouseButton1 or ClickTouch(Input)) and not Library:MouseIsOverOpenedFrame() then
-				if ListOuter.Visible then
-					Dropdown:CloseDropdown()
-				else
-					Dropdown:OpenDropdown()
-				end
-			end
-		end)
+        DropdownOuter.InputBegan:Connect(function(Input)
+            if (Input.UserInputType == Enum.UserInputType.MouseButton1 or ClickTouch(Input)) and not Library:MouseIsOverOpenedFrame() then
+                if ListOuter.Visible then
+                    Dropdown:CloseDropdown()
+                else
+                    Dropdown:OpenDropdown()
+                end
+            end
+        end)
 
 		InputService.InputBegan:Connect(function(Input)
 			if Input.UserInputType == Enum.UserInputType.MouseButton1 or touchStarted then
