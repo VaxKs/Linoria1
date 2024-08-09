@@ -54,6 +54,7 @@ local SaveManager = {} do
 				end
 			end,
 		},
+
 		Input = {
 			Save = function(idx, object)
 				return { type = 'Input', idx = idx, text = object.Value }
@@ -132,8 +133,8 @@ local SaveManager = {} do
 
 	function SaveManager:IgnoreThemeSettings()
 		self:SetIgnoreIndexes({ 
-			"BackgroundColor", "MainColor", "AccentColor", "OutlineColor", "FontColor",
-			"ThemeManager_ThemeList", 'ThemeManager_CustomThemeList', 'ThemeManager_CustomThemeName',
+			"BackgroundColor", "MainColor", "AccentColor", "OutlineColor", "FontColor", -- themes
+			"ThemeManager_ThemeList", 'ThemeManager_CustomThemeList', 'ThemeManager_CustomThemeName', -- themes
 		})
 	end
 
@@ -154,28 +155,26 @@ local SaveManager = {} do
 
 	function SaveManager:RefreshConfigList()
 		local list = listfiles(self.Folder .. '/settings')
-		local out = {}
 
-		for _, file in ipairs(list) do
+		local out = {}
+		for i = 1, #list do
+			local file = list[i]
 			if file:sub(-5) == '.json' then
 				local pos = file:find('.json', 1, true)
 				local start = pos
 
-				while pos > 0 do
+				local char = file:sub(pos, pos)
+				while char ~= '/' and char ~= '\\' and char ~= '' do
 					pos = pos - 1
-					local char = file:sub(pos, pos)
-					if char == '/' or char == '\\' then
-						table.insert(out, file:sub(pos + 1, start - 1))
-						break
-					end
+					char = file:sub(pos, pos)
 				end
 
-				if pos == 0 then
-					table.insert(out, file:sub(1, start - 1))
+				if char == '/' or char == '\\' then
+					table.insert(out, file:sub(pos + 1, start - 1))
 				end
 			end
 		end
-
+		
 		return out
 	end
 
@@ -285,7 +284,7 @@ local SaveManager = {} do
 			self.Library:Notify(string.format('Set %q to auto load', name))
 		end)
 
-		 SaveManager.AutoloadLabel = section:AddLabel('Current autoload config: none', true)
+		SaveManager.AutoloadLabel = section:AddLabel('Current autoload config: none', true)
 
 		if isfile(self.Folder .. '/settings/autoload.txt') then
 			local name = readfile(self.Folder .. '/settings/autoload.txt')
