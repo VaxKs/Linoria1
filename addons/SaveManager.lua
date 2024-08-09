@@ -54,7 +54,6 @@ local SaveManager = {} do
 				end
 			end,
 		},
-
 		Input = {
 			Save = function(idx, object)
 				return { type = 'Input', idx = idx, text = object.Value }
@@ -124,7 +123,7 @@ local SaveManager = {} do
 
 		for _, option in next, decoded.objects do
 			if self.Parser[option.type] then
-				task.spawn(function() self.Parser[option.type].Load(option.idx, option) end) -- task.spawn() so the config loading wont get stuck.
+				task.spawn(function() self.Parser[option.type].Load(option.idx, option) end)
 			end
 		end
 
@@ -133,8 +132,8 @@ local SaveManager = {} do
 
 	function SaveManager:IgnoreThemeSettings()
 		self:SetIgnoreIndexes({ 
-			"BackgroundColor", "MainColor", "AccentColor", "OutlineColor", "FontColor", -- themes
-			"ThemeManager_ThemeList", 'ThemeManager_CustomThemeList', 'ThemeManager_CustomThemeName', -- themes
+			"BackgroundColor", "MainColor", "AccentColor", "OutlineColor", "FontColor",
+			"ThemeManager_ThemeList", 'ThemeManager_CustomThemeList', 'ThemeManager_CustomThemeName',
 		})
 	end
 
@@ -160,8 +159,6 @@ local SaveManager = {} do
 		for i = 1, #list do
 			local file = list[i]
 			if file:sub(-5) == '.json' then
-				-- i hate this but it has to be done ...
-
 				local pos = file:find('.json', 1, true)
 				local start = pos
 
@@ -263,6 +260,14 @@ local SaveManager = {} do
 			if isfile(fullPath) then
 				delfile(fullPath)
 				self.Library:Notify(string.format('Deleted config %q', name))
+				
+				if isfile(self.Folder .. '/settings/autoload.txt') then
+					local autoloadName = readfile(self.Folder .. '/settings/autoload.txt')
+					if autoloadName == name then
+						delfile(self.Folder .. '/settings/autoload.txt')
+						SaveManager.AutoloadLabel:SetText('Current autoload config: none')
+					end
+				end
 				
 				Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
 				Options.SaveManager_ConfigList:SetValue(nil)
