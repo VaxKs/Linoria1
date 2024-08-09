@@ -251,6 +251,26 @@ local SaveManager = {} do
 			Options.SaveManager_ConfigList:SetValue(nil)
 		end)
 
+		section:AddButton('Delete config', function()
+			local name = Options.SaveManager_ConfigList.Value
+			
+			if not name then
+				return self.Library:Notify('No config selected to delete', 2)
+			end
+
+			local fullPath = self.Folder .. '/settings/' .. name .. '.json'
+			
+			if isfile(fullPath) then
+				delfile(fullPath)
+				self.Library:Notify(string.format('Deleted config %q', name))
+				
+				Options.SaveManager_ConfigList:SetValues(self:RefreshConfigList())
+				Options.SaveManager_ConfigList:SetValue(nil)
+			else
+				self.Library:Notify('Config file not found', 2)
+			end
+		end)
+
 		section:AddButton('Set as autoload', function()
 			local name = Options.SaveManager_ConfigList.Value
 			writefile(self.Folder .. '/settings/autoload.txt', name)
@@ -258,7 +278,7 @@ local SaveManager = {} do
 			self.Library:Notify(string.format('Set %q to auto load', name))
 		end)
 
-		SaveManager.AutoloadLabel = section:AddLabel('Current autoload config: none', true)
+		 SaveManager.AutoloadLabel = section:AddLabel('Current autoload config: none', true)
 
 		if isfile(self.Folder .. '/settings/autoload.txt') then
 			local name = readfile(self.Folder .. '/settings/autoload.txt')
