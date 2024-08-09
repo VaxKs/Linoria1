@@ -154,26 +154,28 @@ local SaveManager = {} do
 
 	function SaveManager:RefreshConfigList()
 		local list = listfiles(self.Folder .. '/settings')
-
 		local out = {}
-		for i = 1, #list do
-			local file = list[i]
+
+		for _, file in ipairs(list) do
 			if file:sub(-5) == '.json' then
 				local pos = file:find('.json', 1, true)
 				local start = pos
 
-				local char = file:sub(pos, pos)
-				while char ~= '/' and char ~= '\\' and char ~= '' do
+				while pos > 0 do
 					pos = pos - 1
-					char = file:sub(pos, pos)
+					local char = file:sub(pos, pos)
+					if char == '/' or char == '\\' then
+						table.insert(out, file:sub(pos + 1, start - 1))
+						break
+					end
 				end
 
-				if char == '/' or char == '\\' then
-					table.insert(out, file:sub(pos + 1, start - 1))
+				if pos == 0 then
+					table.insert(out, file:sub(1, start - 1))
 				end
 			end
 		end
-		
+
 		return out
 	end
 
